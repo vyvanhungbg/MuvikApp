@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_0dp"
+        android:layout_marginEnd="@dimen/_0dp"
+        app:itemBackground="?android:windowBackground"
+        app:itemIconTint="@color/bottom_navigation_selected"
+        app:itemTextColor="@color/bottom_navigation_selected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/nav_host_fragment_activity_main"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:defaultNavHost="true"
+                    app:navGraph="@navigation/mobile_navigation" />
+            </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/design_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main"
+            android:clickable="true"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="@dimen/size_peek_height_bottom_sheet"
+            app:elevation="@dimen/_elevation_5dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_control_song_sub"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_layout_control_music_50dp"
+                android:padding="@dimen/_padding_1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.atom.android.muvik.view.CircleImageView
+                    android:id="@+id/layout_image_song_sub"
+                    android:layout_width="@dimen/size_circle_image_45dp"
+                    android:layout_height="@dimen/size_circle_image_45dp"
+                    android:layout_marginLeft="@dimen/_margin_16dp"
+                    app:cardElevation="@dimen/_elevation_2dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/image_song_sub"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/img_splash_screen"
+                        android:orientation="horizontal" />
+                </com.atom.android.muvik.view.CircleImageView>
+
+                <TextView
+                    android:id="@+id/text_name_song_sub"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="@dimen/_0dp"
+                    android:layout_marginStart="@dimen/_margin_8dp"
+                    android:layout_marginEnd="@dimen/_margin_8dp"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/_text_size_16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/text_name_singer_sub"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_favorite_song_sub"
+                    app:layout_constraintStart_toEndOf="@id/layout_image_song_sub"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/title_name_song" />
+
+                <TextView
+                    android:id="@+id/text_name_singer_sub"
+                    android:layout_width="@dimen/_0dp"
+                    android:layout_height="@dimen/_0dp"
+                    android:layout_marginStart="@dimen/_margin_8dp"
+                    android:layout_marginEnd="@dimen/_margin_8dp"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/_text_size_12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_favorite_song_sub"
+                    app:layout_constraintStart_toEndOf="@id/layout_image_song_sub"
+                    app:layout_constraintTop_toBottomOf="@id/text_name_song_sub"
+                    tools:text="@string/title_name_singer" />
+
+                <ImageView
+                    android:id="@+id/image_view_next_song_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_margin_16dp"
+                    android:src="@drawable/ic_next_white_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/image_view_play_song_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_margin_16dp"
+                    android:src="@drawable/ic_play_white_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_next_song_sub"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/image_view_favorite_song_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_margin_16dp"
+                    android:src="@drawable/ic_baseline_favorite_white_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_play_song_sub"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_0dp"
+                android:layout_marginTop="@dimen/_margin_12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_control_song_sub">
+
+
+                <include
+                    android:id="@+id/layout_detail_song"
+                    layout="@layout/partial_detail_song"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
