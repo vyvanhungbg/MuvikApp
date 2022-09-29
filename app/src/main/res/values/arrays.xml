@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleProgressBar">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="progressbarColor" format="color" />
+        <attr name="progressBarThickness" format="dimension" />
+    </declare-styleable>
+
+    <string-array name="array_source_input_entry">
+        <item>Bài hát (mặc định)</item>
+        <item>Podcast</item>
+        <item>Tất cả</item>
+    </string-array>
+
+    <string-array name="array_source_input_value">
+        <item>MUSIC</item>
+        <item>PODCAST</item>
+        <item>ALL</item>
+    </string-array>
+
+</resources>

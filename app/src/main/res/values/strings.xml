@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Muvik</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_favorite">Yêu thích</string>
+    <string name="title_setting">Cài đặt</string>
+
+
+    <string name="title_name_song">Tên bài hát</string>
+    <string name="title_name_singer">Tên ca sĩ</string>
+
+    <string name="error_no_songs_founded">Thử chọn quét các mục âm thanh khác trong cài đặt </string>
+    <string name="title_notification_action_previous">Về trước</string>
+    <string name="title_notification_action_pause">Tạm dừng</string>
+    <string name="title_notification_action_resume">Tiếp tục</string>
+    <string name="title_notification_action_next">Bài tiếp theo</string>
+    <string name="preferred_reset_setting">Đặt lại các cài đặt</string>
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="preferred_output_format">Quét các tập âm thanh</string>
+    <string name="preferred_load_music">Cập nhật bài hát mới</string>
+    <string name="summary_dark_mode">Thay đổi chế độ giữa ngày và đêm</string>
+    <string name="summary_restore_string">Đặt lại các cài đặt về ban đầu</string>
+    <string name="yes">Đồng ý</string>
+    <string name="cancel">Hủy</string>
+    <string name="string_permission">Vui lòng cấp quyền trong cài đặt</string>
+    <string name="title_empty_list">Không có bài hát nào được tìm thấy</string>
+    <string name="text_some_thing">something...</string>
+    <string name="text_time_format">0:00</string>
+
+</resources>

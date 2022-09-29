@@ -1,0 +1,42 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="_padding_16dp">16dp</dimen>
+    <dimen name="_padding_8dp">8dp</dimen>
+    <dimen name="_padding_12dp">12dp</dimen>
+    <dimen name="_padding_4dp">4dp</dimen>
+    <dimen name="_padding_1dp">1dp</dimen>
+
+    <dimen name="_margin_30dp">30dp</dimen>
+    <dimen name="_margin_20dp">20dp</dimen>
+    <dimen name="_margin_16dp">16dp</dimen>
+    <dimen name="_margin_8dp">8dp</dimen>
+    <dimen name="_margin_12dp">12dp</dimen>
+
+    <dimen name="_text_size_16sp">16sp</dimen>
+    <dimen name="_text_size_8sp">8sp</dimen>
+    <dimen name="_text_size_12sp">12sp</dimen>
+    <dimen name="_text_size_18sp">18sp</dimen>
+    <dimen name="_text_size_20sp">20sp</dimen>
+
+    <dimen name="_elevation_5dp">5sp</dimen>
+    <dimen name="_elevation_2dp">2sp</dimen>
+
+    <dimen name="_0dp">0dp</dimen>
+    <dimen name="_35dp">35dp</dimen>
+
+    <dimen name="size_peek_height_bottom_sheet">115dp</dimen>
+    <dimen name="size_circle_image_45dp">45dp</dimen>
+    <dimen name="size_layout_control_music_50dp">50dp</dimen>
+
+    <dimen name="size_item_song">80dp</dimen>
+    <dimen name="height_image_35dp">35dp</dimen>
+    <dimen name="with_image_main_circle">190dp</dimen>
+    <dimen name="with_icon_50dp">50dp</dimen>
+    <dimen name="with_icon_60dp">60dp</dimen>
+    <dimen name="width_circle_progress_bar_200dp">200dp</dimen>
+    <dimen name="size_thickness_progress_10do">10dp</dimen>
+
+</resources>
