@@ -27,6 +27,8 @@ object Constant {
     const val SHARED_PREF_INPUT_FORMAT = PROJECT_NAME + "INPUT_FORMAT"
     const val SHARED_PREF_DARK_MODE = PROJECT_NAME + "DARK_MODE"
     const val SHARED_PREF_RESET_SETTING = PROJECT_NAME + "RESET_SETTING"
+    const val SHARED_PREF_GET_LOCAL_SONG = PROJECT_NAME + "GET_LOCAL_SONG"
+    const val SHARED_PREF_FIRST_LAUNCH_APP = PROJECT_NAME + "FIRST_LAUNCH_APP"
 
     const val SECOND_TO_MIL = 1000
     const val TIME_UPDATE_SEEK_BAR = 1000L
@@ -34,6 +36,7 @@ object Constant {
     const val HOUR_TO_SECOND = 60
     const val DEGREE = 360
 
+    var FIRST_LAUNCH_APP = false
     var LOOP_SONG = false
     var MIX_SONG = false
     var INPUT_FORMAT = "MUSIC"

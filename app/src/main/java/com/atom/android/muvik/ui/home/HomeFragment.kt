@@ -3,7 +3,6 @@ package com.atom.android.muvik.ui.home
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.atom.android.muvik.R
 import com.atom.android.muvik.base.BaseFragment
@@ -13,15 +12,24 @@ import com.atom.android.muvik.data.source.local.SongLocalDataSource
 import com.atom.android.muvik.databinding.FragmentHomeBinding
 import com.atom.android.muvik.ui.main.MusicService
 import com.atom.android.muvik.utils.Constant
+import com.atom.android.muvik.utils.extension.toast
+import com.atom.android.muvik.utils.sqlite.SQLiteUtils
+import com.atom.android.muvik.utils.sqlite.SongDBHelper
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     HomeContract.View, AdapterSongs.ItemClickListener {
 
-    private val adapterSongs = AdapterSongs(this)
+    private val adapterSongs by lazy { AdapterSongs(this) }
     private val presenter by lazy {
         HomeFragmentPresenter.getInstance(
-            SongRepository.getInstance(SongLocalDataSource.getInstance()),
+            SongRepository.getInstance(
+                SongLocalDataSource.getInstance(
+                    SongDBHelper.getInstance(
+                        SQLiteUtils.getInstance(requireContext())
+                    )
+                )
+            ),
             this
         )
     }
@@ -33,8 +41,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             if (isGranted) {
                 presenter.getSongs(activity?.applicationContext)
             } else {
-                Toast.makeText(context, getString(R.string.string_permission), Toast.LENGTH_LONG)
-                    .show()
+                context?.toast(getString(R.string.string_permission))
             }
         }
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -67,7 +74,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     override fun displayFail(message: String) {
-        // Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        context?.toast(message)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            presenter.getSongs(context)
+        }
     }
 
     override fun initView() {

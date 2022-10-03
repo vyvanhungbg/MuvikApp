@@ -1,22 +1,31 @@
 package com.atom.android.muvik.ui
 
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import com.atom.android.muvik.ui.main.MainActivity
-import com.atom.android.muvik.R
+import android.os.Build
+import android.view.Window
+import android.view.WindowManager
 import com.atom.android.muvik.base.BaseActivity
 import com.atom.android.muvik.databinding.ActivitySplashBinding
+import com.atom.android.muvik.ui.main.MainActivity
+import java.util.*
+import kotlin.concurrent.schedule
+
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
 
-
     override fun initView() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }, DELAY_TIME)
+
+        val window: Window = window
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+        Timer().schedule(DELAY_TIME) {
+            this@SplashActivity.runOnUiThread {
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
+            }
+        }
     }
 
     override fun initData() {
@@ -28,7 +37,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     companion object {
-        const val DELAY_TIME = 1200L
+        const val DELAY_TIME = 1000L
+
     }
 
 }

@@ -38,7 +38,10 @@ class AdapterSongs(private val listener: AdapterSongs.ItemClickListener) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (songs.size == 0) EMPTY_VIEW else NORMAL_VIEW
+        return if (songs.isEmpty())
+            EMPTY_VIEW
+        else
+            NORMAL_VIEW
     }
 
     override fun getItemCount(): Int = if (songs.size > 0) songs.size else 1
@@ -48,7 +51,7 @@ class AdapterSongs(private val listener: AdapterSongs.ItemClickListener) :
     }
 
     fun setData(list: MutableList<Song>) {
-        songs.apply {
+        with(songs){
             clear()
             addAll(list)
         }

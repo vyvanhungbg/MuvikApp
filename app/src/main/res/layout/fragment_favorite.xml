@@ -3,7 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.favorite.FavoriteFragment">
+    android:layout_height="match_parent">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_favorite_songs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/_margin_8dp"
+        android:layout_marginTop="@dimen/_margin_8dp"
+        android:layout_marginEnd="@dimen/_margin_8dp"
+        android:textAlignment="center"
+        android:textSize="@dimen/_text_size_20sp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_song" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,5 +25,10 @@
     <string name="title_empty_list">Không có bài hát nào được tìm thấy</string>
     <string name="text_some_thing">something...</string>
     <string name="text_time_format">0:00</string>
+    <string name="text_save_favorite_failed">Thêm vào mục yêu thích thất bại !, thử lại sau</string>
+    <string name="summary_get_local_song">Lấy bài hát được lưu trữ trong máy</string>
+    <string name="title_get_local_song">Đồng bộ với nhạc trên máy</string>
+    <string name="text_get_local_success">Đã tìm thấy %d bài hát</string>
+    <string name="text_get_local_failed">Quét nhạc thất bại !</string>
 
 </resources>

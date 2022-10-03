@@ -1,17 +1,22 @@
 package com.atom.android.muvik.data.source.local
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import com.atom.android.muvik.R
 import com.atom.android.muvik.data.IResultListener
 import com.atom.android.muvik.data.ISongDataSource
 import com.atom.android.muvik.data.model.Song
+import com.atom.android.muvik.data.repository.SongRepository
 import com.atom.android.muvik.utils.Constant
+import com.atom.android.muvik.utils.extension.extractSong
+import com.atom.android.muvik.utils.sqlite.SongDBHelper
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-class SongLocalDataSource : ISongDataSource.Local {
+class SongLocalDataSource(private val songDBHelper: SongDBHelper) : ISongDataSource.Local {
 
     override fun getSongsLocal(context: Context?, listener: IResultListener<MutableList<Song>>) {
         val songs: MutableList<Song> = mutableListOf()
@@ -38,46 +43,89 @@ class SongLocalDataSource : ISongDataSource.Local {
             while (c.moveToNext()) {
                 val path = c.getString(INDEX_COLUM_PATH)
                 val id = c.getString(INDEX_COLUM_ID)
-                songs.add(extractSong(id, path))
+                songs.add(Song.extractSong(id, path))
             }
             c.close()
-        }else{
+        } else {
             listener.onFail(message_error)
         }
         listener.onSuccess(songs)
+        if (songs.size > 0 && context != null) {
+            saveSongsToDataBase(context, songs)
+        }
 
     }
 
-    private fun extractSong(id: String, path: String): Song {
-        val mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(path)
-        val image = mediaMetadataRetriever.embeddedPicture
-
-        val album = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
-        val artist = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-        val genre = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)
-
-        val duration = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-
-        val name = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-        val song = Song(id, name, artist, album, duration, path, image)
-        return song
+    override fun saveSongsToDataBase(context: Context, list: MutableList<Song>) {
+        val executorService: ExecutorService = Executors.newSingleThreadExecutor()
+        executorService.submit(
+            object : Runnable {
+                override fun run() {
+                    for (song in list) {
+                        songDBHelper.insert(song)
+                    }
+                }
+            }
+        )
+        executorService.shutdown()
     }
+
+    override fun getSongsFromDataBase(
+        context: Context?,
+        listener: IResultListener<MutableList<Song>>
+    ) {
+        context?.let {
+            val songs = songDBHelper.findAll()
+            listener.onSuccess(songs)
+        }
+    }
+
+    override fun getFavoriteSongsFromDataBase(
+        context: Context?,
+        listener: IResultListener<MutableList<Song>>
+    ) {
+        context?.let {
+            val songs = songDBHelper.findFavoriteSongs()
+            listener.onSuccess(songs)
+        }
+    }
+
+    override fun updateFavoriteSong(
+        context: Context,
+        id: String,
+        isFavorite: Boolean,
+        listener: IResultListener<Boolean>
+    ) {
+        val executorService: ExecutorService = Executors.newSingleThreadExecutor()
+        executorService.submit(
+            object : Runnable {
+                override fun run() {
+                    val rowEffect = songDBHelper.updateFavorite(id, isFavorite)
+                    if (rowEffect > 0) {
+                        listener.onSuccess(isFavorite)
+                    } else {
+                        listener.onFail(context.getString(R.string.text_save_favorite_failed))
+                    }
+                }
+            }
+        )
+        executorService.shutdown()
+    }
+
 
     companion object {
         private var instance: SongLocalDataSource? = null
-        fun getInstance() = synchronized(this) {
-            instance ?: SongLocalDataSource().also { instance = it }
+        fun getInstance(
+            songDBHelper: SongDBHelper
+        ) = synchronized(this) {
+            instance ?: SongLocalDataSource(songDBHelper).also { instance = it }
         }
 
         const val IS_MUSIC = 0
         const val IS_PODCAST = 1
-        val INDEX_COLUM_PATH = 0
-        val INDEX_COLUM_ID = 1
+        const val INDEX_COLUM_PATH = 0
+        const val INDEX_COLUM_ID = 1
     }
+
+
 }

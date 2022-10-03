@@ -84,7 +84,7 @@ class MusicService : Service() {
                     it.getParcelableArrayListExtra<Song>(Constant.EXTRA_LIST_SONG) as ArrayList<Song>
                 playSong(currentSongPosition)
             }
-            if(it.hasExtra(Constant.EXTRA_ACTION_FLAG)){
+            if (it.hasExtra(Constant.EXTRA_ACTION_FLAG)) {
                 val actionFlag = it.getStringExtra(Constant.EXTRA_ACTION_FLAG)
                 //handleActionMusic(actionFlag)
             }
@@ -193,6 +193,15 @@ class MusicService : Service() {
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
         fun getMediaPlayer(): MediaPlayer? = mediaPlayer
+    }
+
+    fun getSongPlaying() = currentSong
+    fun setSongPlaying(isFavorite: Boolean) {
+        currentSong = currentSong?.copy(favorite = isFavorite)
+    }
+
+    fun removeNotification() {
+        notificationManager?.cancelAll()
     }
 
     companion object {

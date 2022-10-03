@@ -46,7 +46,7 @@ abstract class BaseFragment<VBinding : ViewBinding>(private val bindingLayoutInf
     abstract fun initEvent()
 
     override fun onDestroy() {
-        super.onDestroy()
         _binding = null
+        super.onDestroy()
     }
 }

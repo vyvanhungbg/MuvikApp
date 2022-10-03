@@ -1,20 +1,17 @@
 package com.atom.android.muvik.ui.main
 
-import android.app.Application
 import android.content.*
-import android.os.Bundle
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.atom.android.muvik.R
-import com.atom.android.muvik.base.BasePresenter
+import com.atom.android.muvik.data.IResultListener
 import com.atom.android.muvik.data.model.Song
 import com.atom.android.muvik.data.repository.SongRepository
-import com.atom.android.muvik.ui.home.HomeContract
-import com.atom.android.muvik.ui.home.HomeFragmentPresenter
 import com.atom.android.muvik.utils.Constant
 import com.atom.android.muvik.utils.SharedPreferencesUtils
 
-class MainActivityPresenter(val mainView: MainContract.View) : MainContract.Presenter {
+class MainActivityPresenter(
+    private val repository: SongRepository,
+    private val mainView: MainContract.View
+) : MainContract.Presenter {
 
     private val mMessageReceiverActionFromService: BroadcastReceiver =
         object : BroadcastReceiver() {
@@ -59,6 +56,21 @@ class MainActivityPresenter(val mainView: MainContract.View) : MainContract.Pres
             .unregisterReceiver(mMessageReceiverActionFromService)
     }
 
+    override fun updateFavoriteSong(context: Context, id: String, isFavorite: Boolean) {
+        repository.updateFavoriteSong(context, id, isFavorite,
+            object : IResultListener<Boolean> {
+                override fun onSuccess(list: Boolean) {
+                    mainView.updateFavoriteSongSuccess(list)
+                }
+
+                override fun onFail(message: String) {
+                    mainView.updateFavoriteSongFailed(message)
+                }
+
+            }
+        )
+    }
+
     fun saveLoopSetting(context: Context) {
         SharedPreferencesUtils.getInstance(context)
         Constant.LOOP_SONG = !Constant.LOOP_SONG
@@ -83,9 +95,9 @@ class MainActivityPresenter(val mainView: MainContract.View) : MainContract.Pres
 
     companion object {
         private var instance: MainActivityPresenter? = null
-        fun getInstance(mainView: MainContract.View) =
+        fun getInstance(repository: SongRepository, mainView: MainContract.View) =
             synchronized(this) {
-                instance ?: MainActivityPresenter(mainView).also { instance = it }
+                instance ?: MainActivityPresenter(repository, mainView).also { instance = it }
             }
     }
 
