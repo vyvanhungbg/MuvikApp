@@ -9,11 +9,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.atom.android.muvik.utils.Constant
 import com.atom.android.muvik.utils.SharedPreferencesUtils
+import com.facebook.stetho.Stetho
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Stetho.initializeWithDefaults(this)
         createChannelNotification()
         loadSetting()
     }
@@ -36,19 +38,16 @@ class App : Application() {
     private fun loadSetting() {
         SharedPreferencesUtils.getInstance(applicationContext)
         Constant.LOOP_SONG =
-            SharedPreferencesUtils().getBooleanDefault(Constant.SHARED_PREF_LOOP_SONG)
+            SharedPreferencesUtils().getSettingLoopSong()
         Constant.MIX_SONG =
-            SharedPreferencesUtils().getBooleanDefault(Constant.SHARED_PREF_MIX_SONG)
+            SharedPreferencesUtils().getSettingMixSong()
+        Constant.INPUT_FORMAT = SharedPreferencesUtils().getInputFormatSongs(applicationContext)
 
-        val isDarkMode = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            .getBoolean(Constant.SHARED_PREF_DARK_MODE, false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val isFirstLaunchApp = SharedPreferencesUtils().getFistLaunchingApp()
+        if (!isFirstLaunchApp) {
+            SharedPreferencesUtils().setFistLaunchingApp()
+            Constant.FIRST_LAUNCH_APP = true
         }
-        Constant.INPUT_FORMAT = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            .getString(Constant.SHARED_PREF_INPUT_FORMAT, Constant.INPUT_FORMAT) ?: Constant.INPUT_FORMAT
     }
 
     companion object {

@@ -12,11 +12,14 @@ interface MainContract {
         fun updateTimeSong(elapsedTime: String, remainingTime: String)
         fun updateLoopSetting()
         fun updateMixSongSetting()
+        fun updateFavoriteSongSuccess(isFavorite: Boolean)
+        fun updateFavoriteSongFailed(mess: String)
     }
 
     interface Presenter : BasePresenter<MainContract.View> {
         fun registerActionFromService(context: Context)
         fun calcTimeOfSong(mCurrentPosition: Int, totalTime: Int)
         fun unRegisterLocalBroadcastActionFromService(context: Context)
+        fun updateFavoriteSong(context: Context, id: String, isFavorite: Boolean)
     }
 }

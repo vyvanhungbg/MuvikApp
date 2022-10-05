@@ -4,12 +4,16 @@ import android.content.Context
 import com.atom.android.muvik.data.IResultListener
 import com.atom.android.muvik.data.model.Song
 import com.atom.android.muvik.data.repository.SongRepository
+import com.atom.android.muvik.utils.Constant
 
-class HomeFragmentPresenter(val repository: SongRepository, val homeView: HomeContract.View) :
+class HomeFragmentPresenter(
+    private val repository: SongRepository,
+    private val homeView: HomeContract.View
+) :
     HomeContract.Presenter {
 
     override fun getSongs(context: Context?) {
-        repository.getSongsLocal(context, object : IResultListener<MutableList<Song>> {
+        val listener = object : IResultListener<MutableList<Song>> {
             override fun onSuccess(list: MutableList<Song>) {
                 homeView.displaySuccess(list)
             }
@@ -17,7 +21,12 @@ class HomeFragmentPresenter(val repository: SongRepository, val homeView: HomeCo
             override fun onFail(message: String) {
                 homeView.displayFail(message)
             }
-        })
+        }
+        if (Constant.FIRST_LAUNCH_APP) {
+            repository.getSongsLocal(context, listener)
+        } else {
+            repository.getSongsFromDataBase(context, listener)
+        }
     }
 
     override fun onStart() {

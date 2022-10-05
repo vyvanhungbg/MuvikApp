@@ -1,21 +1,29 @@
 package com.atom.android.muvik.ui.main
 
 import android.content.*
-import android.os.Handler
 import android.os.IBinder
 import android.view.View
 import android.widget.SeekBar
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.atom.android.muvik.R
 import com.atom.android.muvik.base.BaseActivity
 import com.atom.android.muvik.data.model.Song
+import com.atom.android.muvik.data.repository.SongRepository
+import com.atom.android.muvik.data.source.local.SongLocalDataSource
 import com.atom.android.muvik.databinding.ActivityMainBinding
+import com.atom.android.muvik.ui.favorite.FavoriteFragment
+import com.atom.android.muvik.ui.home.HomeFragment
+import com.atom.android.muvik.ui.setting.SettingFragment
 import com.atom.android.muvik.utils.Constant
 import com.atom.android.muvik.utils.extension.setImage
+import com.atom.android.muvik.utils.extension.toast
+import com.atom.android.muvik.utils.sqlite.SQLiteUtils
+import com.atom.android.muvik.utils.sqlite.SongDBHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.activity_main.view.*
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -30,6 +38,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private var isPlaying = false
     private val presenter by lazy {
         MainActivityPresenter.getInstance(
+            SongRepository.getInstance(
+                SongLocalDataSource.getInstance(
+                    SongDBHelper.getInstance(
+                        SQLiteUtils.getInstance(applicationContext)
+                    )
+                )
+            ),
             this
         )
     }
@@ -46,9 +61,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     override fun initView() {
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        binding.navView.setupWithNavController(navController)
-        setBottomSheetState(navController)
+        binding.viewPage.adapter = ViewPagerMainAdapter(
+            this@MainActivity,
+            listOf<Fragment>(HomeFragment(), FavoriteFragment(), SettingFragment())
+        )
+        setBottomSheetState()
         setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
     }
 
@@ -83,6 +100,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding.layoutDetailSong.imageViewMixList.setOnClickListener {
             presenter.saveMixSongSetting(this)
         }
+        fun clickFavorite() {
+            musicService?.getSongPlaying()?.let {
+                presenter.updateFavoriteSong(this, it.id, !it.favorite)
+            }
+        }
+        binding.imageViewFavoriteSongSub.setOnClickListener {
+            clickFavorite()
+        }
+        binding.layoutDetailSong.imageViewFavoriteSong.setOnClickListener {
+            clickFavorite()
+        }
         presenter.registerActionFromService(this)
     }
 
@@ -110,7 +138,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     }
 
-    private fun setBottomSheetState(navController: NavController) {
+    private fun setBottomSheetState() {
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.designBottomSheet)
         val navHeight: Float by lazy { binding.navView.height.toFloat() }
         // set state of layout control song with state bottom sheet
@@ -141,26 +169,55 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         )
 
+        //
+        fun setBottomSheetWhenNoSongPlaying() {
+            if (musicService == null || musicService?.getSongPlaying() == null) {
+                setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
+            } else {
+                setBottomSheetVisibility(BottomSheetBehavior.STATE_COLLAPSED)
+            }
+        }
         // set state  state bottom sheet with of navigation bottom
         binding.navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_setting -> {
-                    setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
-                    NavigationUI.onNavDestinationSelected(item, navController)
+                R.id.navigation_home -> {
+                    setBottomSheetWhenNoSongPlaying()
+                    binding.viewPage.currentItem = POSITION_FRAGMENT_HOME
+                    return@setOnItemSelectedListener true
+                }
+                R.id.navigation_favorite -> {
+                    setBottomSheetWhenNoSongPlaying()
+                    binding.viewPage.currentItem = POSITION_FRAGMENT_FAVORITE
+                    return@setOnItemSelectedListener true
                 }
                 else -> {
-                    if (musicService == null && isPlaying == false) {
-                        setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
-                    } else {
-                        setBottomSheetVisibility(BottomSheetBehavior.STATE_COLLAPSED)
-                    }
-                    NavigationUI.onNavDestinationSelected(item, navController)
+                    setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
+                    binding.viewPage.currentItem = POSITION_FRAGMENT_SETTING
+                    return@setOnItemSelectedListener true
                 }
             }
 
-
         }
 
+        // set state when swipe viewpager
+        binding.viewPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    POSITION_FRAGMENT_HOME -> {
+                        setBottomSheetWhenNoSongPlaying()
+                        binding.navView.selectedItemId = R.id.navigation_home
+                    }
+                    POSITION_FRAGMENT_FAVORITE -> {
+                        setBottomSheetWhenNoSongPlaying()
+                        binding.navView.selectedItemId = R.id.navigation_favorite
+                    }
+                    else -> {
+                        setBottomSheetVisibility(BottomSheetBehavior.STATE_HIDDEN)
+                        binding.navView.selectedItemId = R.id.navigation_setting
+                    }
+                }
+            }
+        })
 
     }
 
@@ -171,6 +228,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding.textNameSingerSub.text = song.artist
         song.setImage(binding.layoutDetailSong.imageViewSongMain)
         binding.layoutDetailSong.textViewNameSongMain.text = song.name
+        updateFavoriteSongSuccess(song.favorite)
     }
 
     private fun setProgressSeekbar() {
@@ -281,6 +339,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
+    override fun updateFavoriteSongSuccess(isFavorite: Boolean) {
+        musicService?.setSongPlaying(isFavorite)
+        runOnUiThread {
+            if (isFavorite) {
+                binding.imageViewFavoriteSongSub.setImageResource(ICON_FAVORITE)
+                binding.layoutDetailSong.imageViewFavoriteSong.setImageResource(ICON_FAVORITE)
+
+            } else {
+
+                binding.imageViewFavoriteSongSub.setImageResource(ICON_NOT_FAVORITE)
+                binding.layoutDetailSong.imageViewFavoriteSong.setImageResource(ICON_NOT_FAVORITE)
+            }
+        }
+
+    }
+
+    override fun updateFavoriteSongFailed(mess: String) {
+        toast(Toast.LENGTH_SHORT)
+    }
+
 
     fun updateSeekBarAndTimeSong() {
         musicService?.getDuration()?.let {
@@ -325,10 +403,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         presenter.unRegisterLocalBroadcastActionFromService(this)
+        musicService?.removeNotification()
         unbindService(serviceConnection)
         progressService.shutdown()
+        super.onDestroy()
     }
 
+
+    override fun onBackPressed() {
+        val exitIntent = Intent(Intent.ACTION_MAIN)
+        exitIntent.addCategory(Intent.CATEGORY_HOME)
+        exitIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(exitIntent)
+    }
+
+    companion object {
+        const val ICON_FAVORITE = R.drawable.ic_baseline_favorite_24
+        const val ICON_NOT_FAVORITE = R.drawable.ic_baseline_favorite_white_24dp
+        const val POSITION_FRAGMENT_HOME = 0
+        const val POSITION_FRAGMENT_FAVORITE = 1
+        const val POSITION_FRAGMENT_SETTING = 2
+    }
 }

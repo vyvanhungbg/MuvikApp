@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <SwitchPreferenceCompat
-        app:defaultValue="false"
-        app:key="com.atom.android.muvik.DARK_MODE"
-        app:singleLineTitle="true"
-        app:summary="@string/summary_dark_mode"
-        app:title="@string/dark_mode" />
+    <Preference
+        android:key="com.atom.android.muvik.GET_LOCAL_SONG"
+        app:summary="@string/summary_get_local_song"
+        app:title="@string/title_get_local_song" />
 
 
     <ListPreference

@@ -54,4 +54,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'androidx.preference:preference:ktx'
     implementation 'androidx.media:media:1.6.0'
+    implementation 'com.facebook.stetho:stetho:1.6.0'
 }

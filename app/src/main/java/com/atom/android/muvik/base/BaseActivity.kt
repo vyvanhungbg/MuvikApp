@@ -25,11 +25,8 @@ abstract class BaseActivity<VBinding : ViewBinding>(private val bindingLayoutInf
     abstract fun initData()
     abstract fun initEvent()
 
-    override fun onNightModeChanged(mode: Int) {
-        super.onNightModeChanged(mode)
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        _binding = null
-//    }
 }

@@ -1,8 +1,10 @@
 package com.atom.android.muvik.utils
 
+import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 
 class SharedPreferencesUtils {
@@ -41,6 +43,28 @@ class SharedPreferencesUtils {
             it.apply()
         }
 
+    }
+
+    fun getFistLaunchingApp(): Boolean {
+        return getBooleanDefault(Constant.SHARED_PREF_FIRST_LAUNCH_APP)
+    }
+
+    fun setFistLaunchingApp() {
+        putBoolean(Constant.SHARED_PREF_FIRST_LAUNCH_APP, true)
+    }
+
+    fun getInputFormatSongs(application: Context): String {
+        return PreferenceManager.getDefaultSharedPreferences(application)
+            .getString(Constant.SHARED_PREF_INPUT_FORMAT, Constant.INPUT_FORMAT)
+            ?: Constant.INPUT_FORMAT
+    }
+
+    fun getSettingLoopSong(): Boolean {
+        return getBooleanDefault(Constant.SHARED_PREF_LOOP_SONG)
+    }
+
+    fun getSettingMixSong(): Boolean {
+        return getBooleanDefault(Constant.SHARED_PREF_MIX_SONG)
     }
 
     companion object {
